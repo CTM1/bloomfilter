@@ -1,5 +1,4 @@
 #include <cstdint>
-#include <iostream>
 
 using namespace std;
 
@@ -30,28 +29,4 @@ void multihash(uint64_t x, uint64_t * hashes, uint64_t nb_hashes, uint64_t max_v
 
   for (uint64_t i=0 ; i<nb_hashes ; i++)
   	hashes[i] %= max_val + 1;
-}
-
-
-/* Compile:
- *	g++ hash.cpp -o hashtest
- * Exec:
- *	./hashtest 147
- */
-int main(int argc, char *argv[]) {
-	// Allocate hash values space
-	uint64_t hashes[3];
-	uint64_t bloom_size = 21354543;
-
-	// Encoded kmer to hash (from command line)
-	uint64_t kmer_value = atoi(argv[1]);
-	// Hashing
-	multihash(kmer_value, hashes, 3, bloom_size-1);
-
-	// Output the hash values
-	cout << "hash list for " << kmer_value << endl;
-	for (uint64_t i=0 ; i<3 ; i++)
-		cout << hashes[i] << endl;
-
-	return 0;
 }
