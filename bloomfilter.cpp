@@ -5,10 +5,14 @@
 #include <fstream>
 #include <string>
 #include <sys/types.h>
+#include <cmath>
+#include <string.h>
 #include "hash.h"
-
+#include <deque>
+#include <iterator>
 
 using namespace std;
+
 
 struct Parameters {
     char * filename;
@@ -19,7 +23,7 @@ struct Parameters {
 };
 
 void help() {
-    printf("Usage:\n./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\nExample:cargo run data/ecoli.fasta 31 456637 3 10000");
+    printf("Usage:\n\t./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\n\tExample : ./bloomfilter data/ecoli.fasta 31 456637 3 10000");
     exit(0);
 }
 
@@ -44,34 +48,37 @@ char next_nucl(fstream &f) {
 }
 
 /** 
-*   A = 1000 00 1 = 0
-*   C = 1000 01 1 = 1
-*   T = 1010 10 0 = 2
-*   G = 1000 11 1 = 3
+*   A = 01000001 & 00011111 = 1
+*   C = 01000011 & 00011111 = 3
+*   G = 01000111 & 00011111 = 7
+*   T = 01010100 & 00011111 = 20
 */ 
 
-/** Encodes A,C,G,T characters into 2,3,5,4 respectively. */
-u_int16_t nucltoi(char n) {
-    return ((u_int16_t) ((n >> 1) & 0b11) + 2);
+/** Encodes A,C,G,T ASCII characters into 1,3,7,20 respectively.
+    works the same for a,c,g,t */
+u_int8_t nucltoi(char n) {
+    return ((u_int8_t) (n & 0b11111));
 }
 
-uint16_t * next_kmer(uint16_t * currkmer, fstream &f) {
-    return (currkmer);
+deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
+    currkmer.pop_front();
+    currkmer.push_back(nucltoi(next_nucl(f)));
+
+    return(currkmer);
 }
 
-uint32_t kmertoi(uint16_t * currkmer, uint16_t kmersize) {
-    uint32_t kmerint = 1;
+/** Rolling hash function */
+uint32_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize) {
+    uint32_t kmerint = 0;
+    deque<u_int8_t>::iterator it = currkmer.begin();
+    int i = 0;
 
-    for (int i = 0; i < kmersize; i++) {
-        if (currkmer[i] == 4) {
-            kmerint *= 7;
-        }
-        else {
-            kmerint *= currkmer[i];
-        }
+    while (it != currkmer.end()) {
+        kmerint += *it++ * pow(4, i);
+        i++;
     }
 
-    return kmerint;
+    return (kmerint);
 }
 
 int main(int argc, char ** argv) {
@@ -85,11 +92,26 @@ int main(int argc, char ** argv) {
     params.r = atoi(argv[5]);
 
     fstream fasta_stream(params.filename);
-    uint16_t kmer[params.k];
+
+    deque<u_int8_t> kmer;
+    deque<u_int8_t>::iterator kmer_it;
 
     for (int i = 0; i < params.k; i++) {
-        kmer[i] = nucltoi(next_nucl(fasta_stream));
+        kmer.push_back(nucltoi(next_nucl(fasta_stream)));
+    }
+    
+    kmer_it = kmer.begin();
+
+    while (kmer_it != kmer.end()) {
+       printf("%d ", *kmer_it++);
     }
 
-    printf("%d ", kmertoi(kmer, params.k));
+    kmer = next_kmer(kmer, fasta_stream);
+    printf("\n");
+
+    kmer_it = kmer.begin();
+
+    while (kmer_it != kmer.end()) {
+       printf("%d ", *kmer_it++);
+    }
 }
