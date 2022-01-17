@@ -41,18 +41,20 @@ char next_nucl(fstream &f) {
         c = f.get();
     }
 
-    while (c == 'N') {
-        f.get();
+    if (c == 'N') {
+        while (f.get() == 'N') {
+            continue;
+        }
     }
 
     return (c);
 }
 
 /** 
-*   A = 01000001 & 00011111 = 1
-*   C = 01000011 & 00011111 = 3
-*   G = 01000111 & 00011111 = 7
-*   T = 01010100 & 00011111 = 20
+*   A = 1000001 & 0011111 = 1
+*   C = 1000011 & 0011111 = 3
+*   G = 1000111 & 0011111 = 7
+*   T = 1010100 & 0011111 = 20
 */ 
 
 /** Encodes A,C,G,T ASCII characters into 1,3,7,20 respectively.
@@ -96,25 +98,16 @@ int main(int argc, char ** argv) {
 
     deque<u_int8_t> kmer;
     deque<u_int8_t>::iterator kmer_it;
+    
+    Bloomfilter bf = Bloomfilter(params.n, params.nf);
 
     for (int i = 0; i < params.k; i++) {
         kmer.push_back(nucltoi(next_nucl(fasta_stream)));
     }
-    
-    kmer_it = kmer.begin();
 
-    while (kmer_it != kmer.end()) {
-       printf("%d ", *kmer_it++);
-    }
+    while (fasta_stream.peek() != EOF) {
+        bf.add_value(hash_kmer(kmer, params.k));
 
-    Bloomfilter bf = Bloomfilter(params.n, params.nf);
-
-    u_int64_t hashedkmer = hash_kmer(kmer, params.k);
-
-    printf("%d\n", bf.is_present(hashedkmer));
-
-    bf.add_value(hashedkmer);
-
-    printf("%d", bf.is_present(hashedkmer));
-   
+        kmer = next_kmer(kmer, fasta_stream);
+    } 
 }
