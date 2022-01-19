@@ -1,5 +1,5 @@
 all:
-	g++ -o bloomfilter bloomfilter.cpp
+	g++ -o bloomfilter main.cpp
 
 clean:
 	rm -f *.o bloomfilter *.core
