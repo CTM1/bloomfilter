@@ -11,7 +11,7 @@ private:
     u_int32_t n_hashes;
     vector<bool> bit_set;
 public:
-    Bloomfilter(size_t n, u_int32_t hashes) {
+    Bloomfilter(uint64_t n, u_int32_t hashes) {
         size = n;
         n_hashes = hashes;
         bit_set = vector<bool> (n);

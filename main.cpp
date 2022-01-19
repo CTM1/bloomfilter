@@ -71,15 +71,17 @@ deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
 }
 
 /** Rolling hash function */
-uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize) {
+uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize, uint64_t bloomsize) {
     uint64_t kmerint = 0;
     deque<u_int8_t>::iterator it = currkmer.begin();
     int i = 0;
 
     while (it != currkmer.end()) {
-        kmerint += *it++ * pow(4, i);
+        kmerint += (u_int64_t) (*it++ * pow(4, i));
         i++;
     }
+    
+    kmerint = (kmerint % bloomsize) + 1;
 
     return (kmerint);
 }
@@ -106,7 +108,7 @@ int main(int argc, char ** argv) {
     }
 
     while (fasta_stream.peek() != EOF) {
-        bf.add_value(hash_kmer(kmer, params.k));
+        bf.add_value(hash_kmer(kmer, params.k, params.n));
 
         kmer = next_kmer(kmer, fasta_stream);
     } 

@@ -2,7 +2,6 @@
 
 using namespace std;
 
-
 /** Hash function that uses xor properties
  * @param x a 64-bits value to hash
  * @return hashed value
@@ -28,5 +27,5 @@ void multihash(uint64_t x, uint64_t * hashes, uint64_t nb_hashes, uint64_t max_v
     hashes[i] = xorshift64(hashes[i-1]);
 
   for (uint64_t i=0 ; i<nb_hashes ; i++)
-  	hashes[i] %= max_val + 1;
+  	hashes[i] %= max_val;
 }
