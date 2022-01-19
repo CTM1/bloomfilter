@@ -24,7 +24,8 @@ struct Parameters {
 };
 
 void help() {
-    printf("Usage:\n\t./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\n\tExample : ./bloomfilter data/ecoli.fasta 31 456637 3 10000");
+    printf("Usage:\n\t./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\n\t");
+    printf("Example : ./bloomfilter data/ecoli.fasta 31 456637 3 10000");
     exit(0);
 }
 
@@ -51,16 +52,16 @@ char next_nucl(fstream &f) {
 }
 
 /** 
-*   A = 1000001 & 0011111 = 1
-*   C = 1000011 & 0011111 = 3
-*   G = 1000111 & 0011111 = 7
-*   T = 1010100 & 0011111 = 20
-*/ 
+*   A = 1000 00 1 
+*   C = 1000 01 1
+*   G = 1000 11 1
+*   T = 1010 10 0
+*/
 
-/** Encodes A,C,G,T ASCII characters into 1,3,7,20 respectively.
+/** Encodes A,C,G,T ASCII characters into 0,1,3,2 respectively.
     works the same for a,c,g,t */
 u_int8_t nucltoi(char n) {
-    return ((u_int8_t) (n & 0b11111));
+    return ((u_int8_t) (n >> 1 & 0b11));
 }
 
 deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
@@ -69,6 +70,35 @@ deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
 
     return(currkmer);
 }
+
+/*
+*  000000 00 = A   000000 11 = G 
+* -2              -2
+*  111111 10 = T   000000 01 = C
+*
+*  000000 01 = C   000000 10 = T
+* -2              -2
+*  111111 11 = G   000000 00 = A 
+*/ 
+
+uint64_t encode_kmer(deque<u_int8_t> currkmer) {
+    uint64_t encoded = 0;
+    uint64_t encoded_rev = 0;
+
+    for (uint8_t c : currkmer) {
+        encoded <<= 2;
+        encoded |= c;
+        c = (c - 2) & 0b11; //rev trick above
+        encoded_rev |= (uint64_t) c << 62;
+        encoded_rev >>= 2;
+    }
+    if (encoded > encoded_rev) 
+        return encoded_rev;
+    return encoded;
+}
+
+/*TODO: Test getting next hash from previous hash
+H(“bcd”)=H(“abc”)−H(“a”)+H(“d”)*/
 
 /** Rolling hash function */
 uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize, uint64_t bloomsize) {
@@ -80,9 +110,6 @@ uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize, uint64_t bloomsi
         kmerint += (u_int64_t) (*it++ * pow(4, i));
         i++;
     }
-    
-    kmerint = (kmerint % bloomsize) + 1;
-
     return (kmerint);
 }
 
@@ -111,5 +138,5 @@ int main(int argc, char ** argv) {
         bf.add_value(hash_kmer(kmer, params.k, params.n));
 
         kmer = next_kmer(kmer, fasta_stream);
-    } 
+    }
 }

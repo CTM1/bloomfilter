@@ -23,7 +23,7 @@ public:
         multihash(x, hashes, n_hashes, size);
 
         for (u_int64_t k : hashes) {
-            bit_set.at(k) = true;
+            bit_set.at(k % size) = true;
         }
     }
 
