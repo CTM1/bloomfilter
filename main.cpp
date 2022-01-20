@@ -54,7 +54,7 @@ char next_nucl(fstream &f) {
 /** 
 *   A = 1000 00 1 
 *   C = 1000 01 1
-*   G = 1000 11 1
+*   G = 1000 11 1 
 *   T = 1010 10 0
 */
 
@@ -71,6 +71,44 @@ deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
     return(currkmer);
 }
 
+/** Compares a kmer and it's reverse complement,
+returns wether the kmer is smaller lexicographically
+than it's complement*/
+bool comp_kmer(uint64_t kmer, uint64_t rev, uint16_t kmersize) {
+    uint8_t i = (kmersize * 2) - 2;
+    uint64_t kmercopy = kmer;
+    uint64_t revcopy = rev;
+
+    while (i > 0) {
+        kmercopy = kmer;
+        revcopy = rev;
+
+        kmercopy = (kmercopy >> i & 0b11);
+        revcopy = (revcopy >> i & 0b11);
+
+        if (kmercopy == revcopy)
+        {
+            i -= 2;
+        }
+        else 
+        {
+            //if kmerG and revT return kmer
+            if ((kmercopy) == 0b11 && (revcopy) == 0b10) {
+                return (true); //kmer
+            }
+            //if kmerT and revG return rev
+            if ((revcopy) == 0b11 && (kmercopy) == 0b10) {
+                return (false); //rev
+            }
+            else {
+                return (kmercopy < revcopy);
+            }
+        }
+    }
+
+    return (true);
+}
+
 /*
 *  000000 00 = A   000000 11 = G 
 * -2              -2
@@ -81,26 +119,29 @@ deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
 *  111111 11 = G   000000 00 = A 
 */ 
 
-uint64_t encode_kmer(deque<u_int8_t> currkmer) {
+uint64_t encode_kmer(deque<u_int8_t> currkmer, uint16_t kmersize) {
     uint64_t encoded = 0;
     uint64_t encoded_rev = 0;
 
     for (uint8_t c : currkmer) {
         encoded <<= 2;
         encoded |= c;
-        c = (c - 2) & 0b11; //rev trick above
+        c = (c - 2) & 0b11;
         encoded_rev |= (uint64_t) c << 62;
         encoded_rev >>= 2;
     }
-    if (encoded > encoded_rev) 
-        return encoded_rev;
-    return encoded;
+
+    encoded_rev >>= 2 * (31 - kmersize);
+
+    if (comp_kmer(encoded, encoded_rev, kmersize)) 
+        return encoded;
+    return encoded_rev;
 }
 
 /*TODO: Test getting next hash from previous hash
 H(“bcd”)=H(“abc”)−H(“a”)+H(“d”)*/
 
-/** Rolling hash function */
+/** Rolling hash function
 uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize, uint64_t bloomsize) {
     uint64_t kmerint = 0;
     deque<u_int8_t>::iterator it = currkmer.begin();
@@ -111,7 +152,7 @@ uint64_t hash_kmer(deque<u_int8_t> currkmer, uint16_t kmersize, uint64_t bloomsi
         i++;
     }
     return (kmerint);
-}
+}*/
 
 int main(int argc, char ** argv) {
     if (argc != 6) help();
@@ -135,7 +176,7 @@ int main(int argc, char ** argv) {
     }
 
     while (fasta_stream.peek() != EOF) {
-        bf.add_value(hash_kmer(kmer, params.k, params.n));
+        bf.add_value(encode_kmer(kmer, params.k));
 
         kmer = next_kmer(kmer, fasta_stream);
     }
