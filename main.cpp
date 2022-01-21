@@ -7,60 +7,88 @@ using namespace std;
 
 struct Parameters {
     char * filename;
-    uint8_t k;  // Size of kmers
-    uint64_t n;  // Size of bloom filter
-    uint32_t nf; // Number of hashing functions
-    uint64_t r;  // Number of requests
+    uint8_t k;  // Size of kmers, 3 to 31
+    uint32_t n;  // Size of bloom filter, max 2^34
+    uint8_t nf; // Number of hashing functions
+    int r;  // Number of requests
 };
 
 void help() {
-    printf("Usage:\n\t./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\n\t");
-    printf("Example : ./bloomfilter data/ecoli.fasta 31 456637 3 10000");
+    printf("Usage:\n\t./bloomfilter <filepath> <kmerSize> <bitvecSize> <hashes> <requests>\n");
+    printf("\tExample : ./bloomfilter data/ecoli.fasta 31 456637 3 10000\n");
     exit(0);
+}
+
+void verify_params(Parameters p) {
+    if (p.k > 31 || p.k < 3) {
+        cerr << "Invalid kmer value, please choose a value between 3 - 31.\n";
+        exit(1);
+    }
+
+    // The bitvec could be much bigger if needed
+    if (p.n > 17179869185 || p.k < 1) {
+        cerr << "Invalid bitvector size, please choose a value between 1 - 2^34.\n";
+        exit(2);
+    }
+
+    if (p.nf < 0 || p.nf > 64) {
+        cerr << "Invalid number of hashes, please choose a value between 0 - 64.\n";
+        exit(3);
+    }
+
+    if (p.r < 0) {
+        cerr << "Invalid number of requests, please choose a positive number.\n";
+        exit(4);
+    }
 }
 
 int main(int argc, char ** argv) {
     if (argc != 6) help();
 
-    Parameters params = {};
-    params.filename = argv[1];
-    params.k = atoi(argv[2]);
-    params.n = atoi(argv[3]);
-    params.nf = atoi(argv[4]);
-    params.r = atoi(argv[5]);
+    Parameters p = {};
+    p.filename = argv[1];
+    p.k = atoi(argv[2]);
+    p.n = strtoul(argv[3], NULL, 10);
+    p.nf = atoi(argv[4]);
+    p.r = atoi(argv[5]);
 
-    ifstream fasta_stream(params.filename);
+    verify_params(p);
+
+    ifstream fasta_stream(p.filename);
     
     if (!fasta_stream.is_open()) { 
         perror("Error opening file"); 
-        exit(1);
+        exit(5);
     }
 
+    // Skipping header
+    skip_line(fasta_stream);
+    
     uint64_t kmer = 0;
     
-    Bloomfilter bf = Bloomfilter(params.n, params.nf);
+    Bloomfilter bf = Bloomfilter(p.n, p.nf);
     
-    for (int i = 0; i < params.k; i++) {
+    for (int i = 0; i < p.k; i++) {
         kmer = next_kmer(kmer, fasta_stream);
     }
 
     while (fasta_stream.peek() != EOF) {
-        bf.add_value(choose_kmer_or_rev(kmer, params.k));
+        bf.add_value(choose_kmer_or_rev(kmer, p.k));
 
         kmer = next_kmer(kmer, fasta_stream);
     }
 
-    for (int i = 0; i < params.r; i++) {
-        uint64_t randkmer = random_kmer(params.k);
+    for (int i = 0; i < p.r; i++) {
+        uint64_t randkmer = random_kmer(p.k);
 
         printf("Testing presence for: ");
         
-        print_kmer(randkmer, params.k);
+        print_kmer(randkmer, p.k);
 
         printf("\nIs present: %d\n\n", bf.is_present(randkmer));
     }
 
     fasta_stream.close();
-
     return(0);
 }
+

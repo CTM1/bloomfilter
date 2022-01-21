@@ -2,7 +2,7 @@
 
 using namespace std;
 
-Bloomfilter::Bloomfilter(uint64_t n, uint32_t hashes) {
+Bloomfilter::Bloomfilter(uint32_t n, uint8_t hashes) {
     size = n;
     n_hashes = hashes;
     bit_set = vector<bool> (n);

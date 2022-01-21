@@ -11,5 +11,6 @@ using namespace std;
 char next_nucl(ifstream &f);
 uint8_t nucltoi(char n);
 uint64_t next_kmer(uint64_t currkmer, ifstream &f);
+void skip_line(ifstream &f);
 
 #endif

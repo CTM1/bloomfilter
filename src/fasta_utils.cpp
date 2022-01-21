@@ -7,18 +7,19 @@ char next_nucl(ifstream &f) {
 
     c = f.get();
 
-    if (c == '>') {
-        while (c != '\n')
-            c = f.get();
-        c = f.get();
-    }
-
     if (c == 'N') {
         while (c == 'N')
             c = f.get();
     }
 
     return (c);
+}
+
+void skip_line(ifstream &f) {
+    char c = f.get();
+
+    while (c != '\n')
+        c = f.get();
 }
 
 /** 
