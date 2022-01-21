@@ -29,6 +29,15 @@ void help() {
     exit(0);
 }
 
+deque<u_int8_t> random_kmer(uint16_t kmersize) {
+    deque<u_int8_t> kmer;
+
+    for (int i = 0; i < kmersize; i++) {
+        kmer[i] = rand() % 4;
+    }
+
+    return (kmer);
+}
 /** Returns the next nucleotide in the DNA sequence,
 skipping over headers and N chars */
 char next_nucl(fstream &f) {
@@ -179,5 +188,20 @@ int main(int argc, char ** argv) {
         bf.add_value(encode_kmer(kmer, params.k));
 
         kmer = next_kmer(kmer, fasta_stream);
+    }
+
+    for (int i = 0; i < params.r; i++) {
+        deque<u_int8_t> randkmer = random_kmer(params.k);
+
+        printf("Testing kmer: ");
+        
+        for (int i = 0; i < params.k; i++) {
+            printf("%d ", randkmer[i]);
+        }
+
+        u_int64_t x = encode_kmer(randkmer, params.k);
+
+        printf("\n");
+        printf("Is present: %d\n", bf.is_present(x));
     }
 }
