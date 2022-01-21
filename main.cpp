@@ -66,15 +66,14 @@ char next_nucl(ifstream &f) {
     c = f.get();
 
     if (c == '>') {
-        while (f.get() != '\n')
-            continue;
+        while (c != '\n')
+            c = f.get();
         c = f.get();
     }
 
     if (c == 'N') {
-        while (f.get() == 'N') {
-            continue;
-        }
+        while (c == 'N')
+            c = f.get();
     }
 
     return (c);
