@@ -40,7 +40,7 @@ deque<u_int8_t> random_kmer(uint16_t kmersize) {
 }
 /** Returns the next nucleotide in the DNA sequence,
 skipping over headers and N chars */
-char next_nucl(fstream &f) {
+char next_nucl(ifstream &f) {
     char c;
 
     c = f.get();
@@ -73,7 +73,7 @@ u_int8_t nucltoi(char n) {
     return ((u_int8_t) (n >> 1 & 0b11));
 }
 
-deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, fstream &f) {
+deque<u_int8_t> next_kmer(deque<u_int8_t> currkmer, ifstream &f) {
     currkmer.pop_front();
     currkmer.push_back(nucltoi(next_nucl(f)));
 
@@ -173,7 +173,12 @@ int main(int argc, char ** argv) {
     params.nf = atoi(argv[4]);
     params.r = atoi(argv[5]);
 
-    fstream fasta_stream(params.filename);
+    ifstream fasta_stream(params.filename);
+    
+    if (!fasta_stream.is_open()) { 
+        perror("Error opening file"); 
+        exit(1);
+    }
 
     deque<u_int8_t> kmer;
     deque<u_int8_t>::iterator kmer_it;
@@ -204,4 +209,8 @@ int main(int argc, char ** argv) {
         printf("\n");
         printf("Is present: %d\n", bf.is_present(x));
     }
+
+    fasta_stream.close();
+
+    return(0);
 }
