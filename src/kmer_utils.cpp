@@ -86,10 +86,13 @@ void print_kmer(uint64_t kmer, uint8_t kmersize) {
 
 uint64_t random_kmer(uint8_t kmersize) {
     uint64_t kmer = 0;
-
+    int shift = 64 - kmersize * 2;
+    
     random_device rd;
     mt19937_64 gen(rd());
     uniform_int_distribution<uint64_t> dis;
 
-    return (dis(gen));
+    kmer = dis(gen) << shift;
+    kmer >>= shift;
+    return (kmer);
 }

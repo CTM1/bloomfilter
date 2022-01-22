@@ -104,20 +104,20 @@ int main(int argc, char ** argv) {
     uint64_t kmer = 0;
     
     for (int i = 0; i < p.k; i++) {
-        kmer = next_kmer(kmer, fasta_stream);
+        kmer = next_kmer(kmer, fasta_stream, p.k);
     }
 
     while (fasta_stream.peek() != EOF) {
         bf.add_value(choose_kmer_or_rev(kmer, p.k));
 
-        kmer = next_kmer(kmer, fasta_stream);
+        kmer = next_kmer(kmer, fasta_stream, p.k);
     }
 
     for (int i = 0; i < p.r; i++) {
         uint64_t randkmer = random_kmer(p.k);
 
         printf("Testing presence for: ");
-        
+       
         print_kmer(randkmer, p.k);
 
         printf("\nIs present: %d\n\n", bf.is_present(randkmer));

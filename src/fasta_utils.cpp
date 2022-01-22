@@ -35,7 +35,9 @@ uint8_t nucltoi(char n) {
     return ((n >> 1) & 0b11);
 }
 
-uint64_t next_kmer(uint64_t currkmer, ifstream &f) {
-    currkmer <<= 2;
+uint64_t next_kmer(uint64_t currkmer, ifstream &f, uint8_t kmersize) {
+    int shift = (kmersize - 1) * 2;
+    currkmer <<= 64 - shift;
+    currkmer >>= 62 - shift;
     return(currkmer | nucltoi(next_nucl(f)));
 }
