@@ -3,7 +3,6 @@
 
 #include <vector>
 #include <cmath>
-#include <bitset>
 #include "hash.hpp"
 
 using namespace std;

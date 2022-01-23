@@ -1,6 +1,8 @@
 #include "fasta_utils.hpp"
 #include <cstdint>
 
+uint8_t encoding[4] = {0b00, 0b01, 0b11, 0b10};
+
 uint8_t next_nucl(ifstream &f) {
     char c;
 
@@ -11,7 +13,7 @@ uint8_t next_nucl(ifstream &f) {
             c = f.get();
     }
 
-    return ((c >> 1) & 0b11);
+    return (encoding[((c >> 1) & 0b11)]);
 }
 
 void skip_line(ifstream &f) {

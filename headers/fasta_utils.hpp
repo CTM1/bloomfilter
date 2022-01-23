@@ -10,7 +10,7 @@ using namespace std;
 
 /**
  * @brief Reads next charactes from file stream and encodes A,C,G,T ASCII characters 
- *        into 0,1,3,2 respectively. Skips over N characters.
+ *        into 0,1,2,3 respectively. Skips over N characters.
  * 
  * @param f File stream to read characters from.
  * @return uint8_t Encoded nucleotide

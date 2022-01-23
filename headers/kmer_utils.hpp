@@ -9,8 +9,9 @@ using namespace std;
 /**
  * @brief Returns a kmer or it's reverse complement, whichever is smaller
  *        lexicographically.
- * Creates the reverse complement of kmer and compares both using
- * comp_kmer, returns whichever is smaller lexicographically.
+ * Creates the reverse complement of kmer and compares both,
+ * supposing a {0:A, 1:C, 2:G, 3:T} encoding is used, 
+ * it will return whichever one is smaller lexicographically.
  * @param kmer kmer representation.
  * @param kmersize 
  */
