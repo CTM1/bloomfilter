@@ -103,7 +103,7 @@ int main(int argc, char ** argv) {
     
     uint64_t kmer = 0;
     
-    for (uint32_t i = 0; i < p.k; i++) {
+    for (uint8_t i = 0; i < p.k; i++) {
         kmer = next_kmer(kmer, fasta_stream, p.k);
     }
 
@@ -114,9 +114,9 @@ int main(int argc, char ** argv) {
     }
 
     for (uint32_t i = 0; i < p.r; i++) {
-        bf.is_present(random_kmer(p.k));
+        bf.is_present(random_kmer(p.k)); 
     }
-
+    
     fasta_stream.close();
     return(0);
 }
