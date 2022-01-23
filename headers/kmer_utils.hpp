@@ -1,3 +1,9 @@
+/**
+ * @file kmer_utils.hpp
+ * @brief Utilities used to deal with kmers represented as uint64_t's.
+ * 
+ */
+
 #ifndef KMERUTILS_HPP
 #define KMERUTILS_HPP
 
@@ -25,22 +31,10 @@ uint64_t choose_kmer_or_rev(uint64_t currkmer, uint8_t kmersize);
 uint64_t random_kmer(uint8_t kmersize);
 
 /**
- * @brief Tests if a kmer is smaller than it's reverse complement
- * Returns a boolean indicating wether the kmer is smaller 
- * lexicographically than it's reverse complement.
- * @param kmer Unsigned integer representing a kmer.
- * @param rev Unsigned integer representing it's reverse complement.
- * @param kmersize Size of kmer.
- * @return true Returned if kmer is lexicographically smaller than rev.
- * @return false Returned if rev is lexicographically smaller than kmer.
- */
-bool comp_kmer(uint64_t kmer, uint64_t rev, uint8_t kmersize);
-
-/**
- * @brief Prints kmer as characters to stdout
+ * @brief Prints kmer as characters to stdout.
  * 
- * @param kmer Unsigned integer representing kmer
- * @param kmersize Size of kmer
+ * @param kmer Unsigned integer representing kmer.
+ * @param kmersize Size of kmer.
  */
 void print_kmer(uint64_t kmer, uint8_t kmersize);
 

@@ -1,3 +1,8 @@
+/**
+ * @file fasta_utils.hpp
+ * @brief Utilities used to extract kmers and nucleotides from an ifstream of a FASTA file.
+ * 
+ */
 #ifndef FASTAUTILS_HPP
 #define FASTAUTILS_HPP
 
