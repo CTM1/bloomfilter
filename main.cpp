@@ -10,7 +10,7 @@ struct Parameters {
     char * filename;
     uint8_t k;      // Size of kmers, 3 to 31
     uint8_t nf;     // Number of hashing functions
-    uint32_t n;     // Size of bloom filter, max 2^34
+    uint64_t n;     // Size of bloom filter, max 2^34
     uint32_t r;     // Number of requests
     
     float fp;       // False-positive rate
@@ -115,12 +115,8 @@ int main(int argc, char ** argv) {
 
     for (int i = 0; i < p.r; i++) {
         uint64_t randkmer = random_kmer(p.k);
-
-        printf("Testing presence for: ");
-       
-        print_kmer(randkmer, p.k);
-
-        printf("\nIs present: %d\n\n", bf.is_present(randkmer));
+        
+        bf.is_present(randkmer);
     }
 
     fasta_stream.close();

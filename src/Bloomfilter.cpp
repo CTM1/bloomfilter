@@ -5,7 +5,7 @@ using namespace std;
 Bloomfilter::Bloomfilter() {
 }
 
-Bloomfilter::Bloomfilter(uint32_t n, uint8_t hashes) {
+Bloomfilter::Bloomfilter(uint64_t n, uint8_t hashes) {
     size = n;
     n_hashes = hashes;
     bit_set = vector<bool> (n);
@@ -42,10 +42,10 @@ bool Bloomfilter::is_present(uint64_t x) {
 
 // With the help of https://hur.st/bloomfilter/
 
-uint32_t Bloomfilter::needed_bits(double f_pos_rate, uint64_t items) {
+uint64_t Bloomfilter::needed_bits(double f_pos_rate, uint64_t items) {
     return ceil((items * log(f_pos_rate)) / (log(1 / pow(2, log(2)))));
 }
 
-uint32_t Bloomfilter::optimal_nhashes(uint32_t bits, uint64_t items) {
+uint64_t Bloomfilter::optimal_nhashes(uint64_t bits, uint64_t items) {
     return ((bits / items) * log(2));
 }

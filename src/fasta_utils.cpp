@@ -1,8 +1,9 @@
 #include "fasta_utils.hpp"
+#include <cstdint>
 
 /** Returns the next nucleotide in the DNA sequence,
 skipping over headers and N chars */
-char next_nucl(ifstream &f) {
+uint8_t next_nucl(ifstream &f) {
     char c;
 
     c = f.get();
@@ -12,7 +13,7 @@ char next_nucl(ifstream &f) {
             c = f.get();
     }
 
-    return (c);
+    return ((c >> 1) & 0b11);
 }
 
 void skip_line(ifstream &f) {
@@ -31,13 +32,10 @@ void skip_line(ifstream &f) {
 
 /** Encodes A,C,G,T ASCII characters into 0,1,3,2 respectively.
     works the same for a,c,g,t */
-uint8_t nucltoi(char n) {
-    return ((n >> 1) & 0b11);
-}
 
 uint64_t next_kmer(uint64_t currkmer, ifstream &f, uint8_t kmersize) {
     int shift = (kmersize - 1) * 2;
     currkmer <<= 64 - shift;
     currkmer >>= 62 - shift;
-    return(currkmer | nucltoi(next_nucl(f)));
+    return(currkmer | next_nucl(f));
 }
