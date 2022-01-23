@@ -114,9 +114,7 @@ int main(int argc, char ** argv) {
     }
 
     for (int i = 0; i < p.r; i++) {
-        uint64_t randkmer = random_kmer(p.k);
-        
-        bf.is_present(randkmer);
+        bf.is_present(random_kmer(p.k));
     }
 
     fasta_stream.close();

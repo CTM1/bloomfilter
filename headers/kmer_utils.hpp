@@ -33,7 +33,7 @@ uint64_t random_kmer(uint8_t kmersize);
  * @return true Returned if kmer is lexicographically smaller than rev.
  * @return false Returned if rev is lexicographically smaller than kmer.
  */
-bool comp_kmer(uint64_t kmer, uint64_t rev, uint8_t kmersize)
+bool comp_kmer(uint64_t kmer, uint64_t rev, uint8_t kmersize);
 
 /**
  * @brief Prints kmer as characters to stdout
