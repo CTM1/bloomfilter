@@ -1,3 +1,4 @@
+[Du français fieu!](https://github.com/CTM1/bloomfilter/blob/main/README_fr.md)
 # Bloomfilter
 Intern candidate test for the Pasteur Institue. Bloom filter implementation.
 
@@ -17,27 +18,27 @@ You may compile the code using `g++` by typing `make`. Other options are
 available:
 
 > `make clang` :
-    Same compilation process as g++, but for the `clang++` compiler.
+    Same compilation process as `g++`, but for the `clang++` compiler.
 
 > `make lto_off` :
-    Disables g++ [Link Time Optimization](https://gcc.gnu.org/wiki/LinkTimeOptimization).
+    Disables `g++` [Link Time Optimization](https://gcc.gnu.org/wiki/LinkTimeOptimization).
     Small negative impact to performance, slightly smaller binary.
 
 > `make unoptimized` :
-    Disables g++ [Optimization Options](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html).
+    Disables `g++` [Optimization Options](https://gcc.gnu.org/onlinedocs/gcc/Optimize-Options.html).
     Big impact to performance, biggest binary.
 
 > `make clang_lto_off` :
-    Disables clang `Link Time Optimization`
+    Disables `clang` `Link Time Optimization`
     Negligeable impact to performance, slightly smaller binary.
 
 > `make clang_unoptimized` :
-    Disables clang `Optimization Options`.
+    Disables `clang` `Optimization Options`.
     Big impact to performance, biggest binary.
 
 # Execution
 
-The program will always take a **filepath**, **k**, and **number of requests** (`r`). 
+The program will always take a **filepath**, **k**, and **number of requests** (`r`) as arguments. 
 
 By default, you may specify:
 
@@ -104,7 +105,7 @@ Since each `uint64_t kmer` is unique in this implementation, changing the kmer v
 equivalent to making it the same as another kmer, creating an unwanted collision.
 
 In this implementation, every `k-mer` only containing the nucleotide `'A'` will aways hash to zero,
-therefore in the bloom filter, the only bit representing it's presence will be the first one.
+therefore in the bloom filter, the only bit representing its presence will be the first one.
 
 I could not find an efficient way to circumvent this quirk. However,
 there is no chance of collision.
