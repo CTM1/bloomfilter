@@ -17,4 +17,4 @@ clang_unoptimized:
 	clang++ -Wall -I headers src/*.cpp main.cpp -o bloomfilter
 
 clean:
-	rm -f *.o bloomfilter
+	rm -rf *.o bloomfilter latex html

@@ -109,7 +109,7 @@ int main(int argc, char ** argv) {
 
     while (fasta_stream.peek() != EOF) {
         bf.add_value(choose_kmer_or_rev(kmer, p.k));
-
+ 
         kmer = next_kmer(kmer, fasta_stream, p.k);
     }
 
@@ -120,4 +120,3 @@ int main(int argc, char ** argv) {
     fasta_stream.close();
     return(0);
 }
-

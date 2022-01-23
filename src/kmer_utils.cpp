@@ -6,7 +6,7 @@ mt19937_64 gen(rd());
 uniform_int_distribution<uint64_t> dis;
 
 // This solution inspired from https://www.biostars.org/p/113640/ provides
-// an overall performance boost from the previous implementation.
+// a performance boost from the previous implementation.
 uint64_t choose_kmer_or_rev(uint64_t kmer, uint8_t kmersize) {
     uint64_t res = ~kmer;
 
