@@ -64,12 +64,12 @@ Notes:
 Specifically the size of the bloom filter may be over 2^34 bits and there may be more than 64
 hashing functions to accomodate for the false positive rate.
 
-- **Unexpected behaviour may occur if the estimated size of the bit vector goes above $2^{63} - 1$**. 
+- **Unexpected behaviour may occur if the estimated size of the bit vector goes above 2^63 - 1**. 
 
 Since this is the [maximum vector size in C++](https://en.cppreference.com/w/c/types/size_t) and
 also of an uint64_t.
 
-I estimated you would need $10^{13}$ expected elements with a false positive rate $10^{-17}$, 
+I estimated you would need 10^13 expected elements with a false positive rate 10^-17, 
 so it is not accounted for.
 
 
@@ -115,7 +115,7 @@ there is no chance of collision.
 ### Things I would've liked to add with more time
 - A more robust command-line (please, be gentle, the option parsing is basically non-existent).
 - Parsing a FASTA file with multiple headers, options to only parse specific ones and separate bloomfilters for each one.
-- A way of storing kmers with $k > 31$ in the same [Huffman-encoding](https://en.wikipedia.org/wiki/Huffman_coding) fashion.
+- A way of storing kmers with k > 31 in the same [Huffman-encoding](https://en.wikipedia.org/wiki/Huffman_coding) fashion.
 
 ---
 ### Thanks

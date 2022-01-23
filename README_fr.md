@@ -63,15 +63,15 @@ L'option `-p`\* prend:
 Notes: 
 - **Cette option ne respecte pas ce [README](https://github.com/yoann-dufresne/bloomtest/)!**,
 
-Spécifiquement la taille de ce filtre de Bloom peut être au-dessus de $2^{34}$ et il peut y avoir
+Spécifiquement la taille de ce filtre de Bloom peut être au-dessus de 2^34 et il peut y avoir
 plus de 64 fonctions de hachage pour respecter le taux de faux positifs.
 
-- **Comportement non-défini pour une taille de filtre supérieure à $2^{63} - 1$**. 
+- **Comportement non-défini pour une taille de filtre supérieure à 2^63 - 1**. 
 
 C'est la [taille maximum d'un vecteur en C++](https://en.cppreference.com/w/c/types/size_t) et
 aussi d'un uint64_t.
 
-J'ai estimé que $10^{13}$ éléments seraient necéssaires avec un taux de faux-positifs de $10^{-17}$, 
+J'ai estimé que 10^13 éléments seraient necéssaires avec un taux de faux-positifs de 10^-17, 
 pour dépasser cette limite. Pour cette raison je ne l'ai pas pris en compte.
 
 
@@ -115,7 +115,7 @@ il n'y a pas de possibilité de collision.
 ### J'aurais aimé ajouter
 - Une CLI plus robuste (le parsing n'existe presque pas).
 - Parser un fichier FASTA avec plusieurs identifications, des options pour parser des identifications spécifiques avec leurs filtres de Bloom respectifs.
-- Une façon de stocker des kmers avec un $k > 31$ avec le même [code Huffman](https://fr.wikipedia.org/wiki/Codage_de_Huffman).
+- Une façon de stocker des kmers avec un k > 31 avec le même [code Huffman](https://fr.wikipedia.org/wiki/Codage_de_Huffman).
 
 ---
 ### Merci !
