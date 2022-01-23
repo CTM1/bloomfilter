@@ -2,9 +2,6 @@
 
 char encoding[4] = {'A', 'C', 'T', 'G'};
 
-/** Compares a kmer and it's reverse complement,
-returns wether the kmer is smaller lexicographically
-than it's reverse complement*/
 bool comp_kmer(uint64_t kmer, uint64_t rev, uint8_t kmersize) {
     uint8_t i = (kmersize * 2) - 2;
     uint64_t kmercopy = kmer;
@@ -40,8 +37,8 @@ bool comp_kmer(uint64_t kmer, uint64_t rev, uint8_t kmersize) {
 
 // This solution inspired from https://www.biostars.org/p/113640/ provides
 // an overall performance boost from the previous implementation.
-uint64_t choose_kmer_or_rev(uint64_t currkmer, uint8_t kmersize) {
-    uint64_t res = currkmer;
+uint64_t choose_kmer_or_rev(uint64_t kmer, uint8_t kmersize) {
+    uint64_t res = kmer;
 
     res = ((res>> 2 & 0x3333333333333333) | (res & 0x3333333333333333) <<  2);
     res = ((res>> 4 & 0x0F0F0F0F0F0F0F0F) | (res & 0x0F0F0F0F0F0F0F0F) <<  4);
@@ -51,37 +48,8 @@ uint64_t choose_kmer_or_rev(uint64_t currkmer, uint8_t kmersize) {
     res = res ^ 0xAAAAAAAAAAAAAAAA;
     return (res >> (2 * (32 - kmersize))) ;
     
-    return (comp_kmer(currkmer, res, kmersize) ? currkmer : res);
+    return (comp_kmer(kmer, res, kmersize) ? kmer : res);
 }
-/**
-*  000000 00 = A   000000 11 = G 
-* -2              -2
-*  111111 10 = T   000000 01 = C
-*
-*  000000 01 = C   000000 10 = T
-* -2              -2
-*  111111 11 = G   000000 00 = A 
-
-uint64_t choose_kmer_or_rev(uint64_t currkmer, uint8_t kmersize) {
-    uint64_t rev_kmer = 0;
-    uint64_t c = currkmer;
-    
-    for (int i = kmersize * 2 - 2; i > -1; i -= 2) {
-        c = (c >> i) & 0b11;
-        c = (c - 2) & 0b11;
-        c <<= 62;
-
-        rev_kmer |= c;
-        rev_kmer >>= 2;
-
-        c = currkmer;
-    }
-
-    rev_kmer >>= 2 * (31 - kmersize);
-    
-    return (comp_kmer(currkmer, rev_kmer, kmersize) ? currkmer : rev_kmer);
-}
-*/
 
 void print_kmer(uint64_t kmer, uint8_t kmersize) {
   int i = kmersize * 2 - 2;
@@ -90,6 +58,7 @@ void print_kmer(uint64_t kmer, uint8_t kmersize) {
       printf("%c", encoding[c>>i & 0b11]);
       i -= 2;
   }
+  printf("\n");
 }
 
 uint64_t random_kmer(uint8_t kmersize) {
